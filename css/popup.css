@@ -1,0 +1,63 @@
+body {
+    width: 200px;
+    height: 200px;
+    margin: 0;
+}
+
+#header {
+    display: inline;
+}
+
+#title {
+    color: orange;
+    display: inline;
+}
+
+#add {
+    display: inline;
+    color: lightblue;
+    border: none;
+    outline: none;
+    font-size: 15px;
+}
+
+#add:hover {
+    opacity: 0.5;
+    cursor: pointer;
+}
+
+.anime {
+    margin: 0;
+    padding: 0;
+    padding-left: 25px;
+}
+
+.delete {
+    border: none;
+    outline: none;
+    display: none;
+    background-color: lightgrey;
+    padding: none;
+    margin: none;
+    width: 25px;
+}
+
+.delete:hover {
+    cursor: pointer;
+    opacity: 0.5;
+}
+
+.anime:hover .delete {
+    display: inline-block;
+}
+
+.anime:hover {
+    background-color: lightgrey;
+    padding-left: 0px;
+}
+
+.animeTitle {
+    display: inline;
+    margin: 0;
+    padding: 0;
+}
