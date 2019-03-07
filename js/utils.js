@@ -36,3 +36,12 @@ function get_masterani_url(url) {
     var parsed = parser.pathname.split('/');
     return "https://www.masterani.me/anime/info/" + parsed[3];
 }
+
+function get_url_from_title(title) {
+    var url;
+    chrome.storage.sync.get({'anime': []}, function(data) {
+        var anime = data.anime.find(o => o.name === title);
+        url = anime.url;
+    });
+    return url;
+}
