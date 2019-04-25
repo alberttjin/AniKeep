@@ -8,11 +8,19 @@ function check_new(title, ep) {
     var ep = ep + 1;
     var title = title.split(' ').join('-');
     var proxy_url = "https://cors-anywhere.herokuapp.com/";
-    var url = "https://4anime.to/" + title + '-' + 'episode' + '-' +  ep;
+    var url = "https://4anime.to/" + title + '-' + 'episode' + '-' + '0' + ep;
     var http = new XMLHttpRequest();
     http.open('HEAD', proxy_url + url, false);
     http.send();
-    return http.status != 404;
+    if (http.status != 404) {
+        return true;
+    } else {
+        url = "https://4anime.to/" + title + '-' + 'episode' + '-' + ep;
+        http = new XMLHttpRequest();
+        http.open('HEAD', proxy_url + url, false);
+        http.send();
+        return http.status != 404
+    }
 }
 
 function get_kissanime_title(url) {

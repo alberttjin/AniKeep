@@ -20,6 +20,7 @@ function handle_add(url, ep) {
         'title': title,
         'url': url,
         'ep': ep,
+        'new': check_new(title, ep),
     }
     chrome.storage.sync.get({'anime': []}, function(data) {
         if (!data.anime.some(e => e.title === title)) {
@@ -55,6 +56,7 @@ function update_ep(title, ep) {
         });
         if (to_edit){
             to_edit['ep'] = ep;
+            to_edit['new'] = check_new(title, ep);
             new_anime.push(to_edit);
             chrome.storage.sync.set({anime: new_anime});
         }

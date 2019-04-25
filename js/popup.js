@@ -53,8 +53,7 @@ function load_anime() {
     chrome.storage.sync.get({'anime': []}, function(data) {
         var html = "";
         data.anime.forEach(function(elem, i) {
-            var exists_new = check_new(elem.title, elem.ep);
-            var to_add = exists_new ? "<p class='new'>New!</p>" : ""
+            var to_add = elem.new ? "<p class='new'>New!</p>" : ""
             html += "<div class='anime'><button class='delete' data-divider=" + 
             i +
             "><i class='fa fa-times'></i></button><button class='go' data-divider=" +
