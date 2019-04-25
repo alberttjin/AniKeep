@@ -106,10 +106,29 @@ html {
 }
 
 .animeTitle {
+    display: inline;
     margin: 0;
     padding: 0;
     font-size: 14px;
     font-family: 'PT Sans', sans-serif;   
+}
+
+.ep {
+    display: inline;
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+    font-family: 'PT Sans', sans-serif;   
+}
+
+.new {
+    display: inline;
+    margin: 0;
+    margin-left: 10px;
+    padding: 0;
+    font-size: 14px;
+    font-family: 'PT Sans', sans-serif;   
+    color: red;
 }
 
 .go {

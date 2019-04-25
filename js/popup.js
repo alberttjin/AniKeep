@@ -2,7 +2,8 @@ $(function(){
     $("#animeList").on('click', '#add', function() {
         chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
             var url = tabs[0].url;
-            var title = handle_add(url);
+            var ep = get_ep(url) || 0;
+            var title = handle_add(url, ep);
             if (title) {
                 chrome.storage.sync.get({'anime': []}, function(data) {
                     if (!data.anime.some(e => e.title === title)) {
@@ -15,7 +16,11 @@ $(function(){
                         i +
                         ">" +
                         title +
-                        "</p></button></div>";
+                        "</p>" +
+                        "<p class='ep'> (ep. " +
+                        ep +
+                        ")</p>" +
+                        "</button></div>";
                         $(to_append).insertBefore("#addWrapper");
                     }
                 });
@@ -48,15 +53,22 @@ function load_anime() {
     chrome.storage.sync.get({'anime': []}, function(data) {
         var html = "";
         data.anime.forEach(function(elem, i) {
+            var exists_new = check_new(elem.title, elem.ep);
+            var to_add = exists_new ? "<p class='new'>New!</p>" : ""
             html += "<div class='anime'><button class='delete' data-divider=" + 
-                i +
-                "><i class='fa fa-times'></i></button><button class='go' data-divider=" +
-                i +
-                "><p class='animeTitle' id=" +
-                i +
-                ">" +
-                elem.title +
-                "</p></button></div>"
+            i +
+            "><i class='fa fa-times'></i></button><button class='go' data-divider=" +
+            i +
+            "><p class='animeTitle' id=" +
+            i +
+            ">" +
+            elem.title +
+            "</p>" +
+            "<p class='ep'> (ep. " +
+            elem.ep +
+            ")</p>" +
+            to_add +
+            "</button></div>";
         });
         html += "<div id='addWrapper'><button id='add'><p id='addText'>Add</p></button></div>";
         $("#animeList").append(html);

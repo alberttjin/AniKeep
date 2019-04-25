@@ -4,7 +4,7 @@
     "description": "Manage the anime you're currently watching on KissAnime!",
     "permissions": ["storage", "tabs", "storage"],
     "background": {
-      "scripts": ["background.js"],
+      "scripts": ["background.js", "js/utils.js", "js/api.js"],
       "persistent": false
     },
     "browser_action": {
