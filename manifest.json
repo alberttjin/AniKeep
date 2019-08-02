@@ -1,7 +1,7 @@
 {
-    "name": "Anime Manager",
-    "version": "1.0",
-    "description": "Manage the anime you're currently watching on KissAnime!",
+    "name": "AniKeep",
+    "version": "3.0",
+    "description": "Add and manage all the anime you are currently watching!",
     "permissions": ["storage", "tabs", "storage"],
     "background": {
       "scripts": ["background.js", "js/utils.js", "js/api.js"],

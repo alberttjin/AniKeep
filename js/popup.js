@@ -1,76 +1,104 @@
-$(function(){
-    $("#animeList").on('click', '#add', function() {
-        chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
-            var url = tabs[0].url;
-            var ep = get_ep(url) || 0;
-            var title = handle_add(url, ep);
-            if (title) {
-                chrome.storage.sync.get({'anime': []}, function(data) {
-                    if (!data.anime.some(e => e.title === title)) {
-                        var i = data.anime.length;
-                        var to_append = "<div class='anime'><button class='delete' data-divider=" + 
-                        i +
-                        "><i class='fa fa-times'></i></button><button class='go' data-divider=" +
-                        i +
-                        "><p class='animeTitle' id=" +
-                        i +
-                        ">" +
-                        title +
-                        "</p>" +
-                        "<p class='ep'> (ep. " +
-                        ep +
-                        ")</p>" +
-                        "</button></div>";
-                        $(to_append).insertBefore("#addWrapper");
-                    }
-                });
-            } else {
-                //TODO: add other error handling
-                alert("Page not recognized. Try kissanime.ru or masterani.me")
-            }
-        });
-    });
-    load_anime();
-    $("#animeList").on('click', '.delete', function() {
-        var id = $(this).attr('data-divider');
-        var title = $('#' + id).text();
-        title = title === "false" ? false : title
-        handle_delete(title);
-        var parent = $(this).parent("div");
-        parent.remove();
-    });
-    $("#animeList").on('click', '.go', function() {
-        var id = $(this).attr('data-divider');
-        var title = $('#' + id).text();
-        chrome.storage.sync.get({'anime': []}, function(data) {
-            var url = data.anime.find(o => o.title === title).url;
-            chrome.tabs.create({url: url});
-        })
-    });
-})
+$(document).ready(async() => {
+    const token = getCookie("token")
+    if (token) {
+        loadLoginSignUp()
+    } else {
+        await loadAnime()
+    }
+});
 
-function load_anime() {
-    chrome.storage.sync.get({'anime': []}, function(data) {
-        var html = "";
-        data.anime.forEach(function(elem, i) {
-            var to_add = elem.new ? "<p class='new'>New!</p>" : ""
-            html += "<div class='anime'><button class='delete' data-divider=" + 
-            i +
-            "><i class='fa fa-times'></i></button><button class='go' data-divider=" +
-            i +
-            "><p class='animeTitle' id=" +
-            i +
-            ">" +
-            elem.title +
-            "</p>" +
-            "<p class='ep'> (ep. " +
-            elem.ep +
-            ")</p>" +
-            to_add +
-            "</button></div>";
-        });
-        html += "<div id='addWrapper'><button id='add'><p id='addText'>Add</p></button></div>";
-        $("#animeList").append(html);
+const loadLoginSignUp = () => {
+    const html = `
+        <div class="tab">
+            <button class="tablinks active" id="signuptab">Signup</button>
+            <button class="tablinks" id="logintab">Login</button>
+        </div>
+
+        <div id="signup" class="tabcontent">
+            <h3>Signup</h3>
+                <input type="text" placeholder="Email" name="email" id="email" required>
+                <input type="text" placeholder="Username" name="username" id="username" required>
+                <input type="password" placeholder="Password" name="password" id="password" required>
+                <button id="signupbutton">SignUp!</button>
+        </div>
+
+        <div id="login" class="tabcontent">
+            <h3>Login</h3>
+                <input type="text" placeholder="Email" name="email" id="lemail" required>
+                <input type="password" placeholder="Password" name="password" id="lpassword" required>
+                <button id="loginbutton">Login!</button>
+        </div>
+    `
+    $("body").append(html)
+    $("body").keyup((event) => {
+        if (event.keyCode === 13) {
+            $("#logintab").hasClass("active") ? $("#loginbutton").click() : $("#signupbutton").click();
+        }
     });
+    $("#signuptab").click(openSignUp);
+    $("#logintab").click(openLogin);
+    $("#signupbutton").click(signUpConnector);
+    $("#loginbutton").click(loginConnector);
 }
+
+const openSignUp = () => {
+    $("#login").hide()
+    $("#logintab").removeClass("active")
+    $("#signup").show()
+    $("#signuptab").addClass("active")
+}
+
+const openLogin = () => {
+    $("#signup").hide()
+    $("#signuptab").removeClass("active")
+    $("#login").show()
+    $("#logintab").addClass("active")
+}
+
+const loadAnime = async() => {
+    document.body.innerHTML = '';
+    const token = getCookie("token")
+    addHeader()
+    addAddButton()
+    await getAnimesConnector(token)
+    $("#add").click(addAnimeConnector)
+}
+// $(function() {
+//     $("#animeList").on('click', '#add', function() {
+//         chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+//             var url = tabs[0].url
+//             var parsedInfo = parseAndAdd(url)
+//             var title = parsedInfo.title
+//             var ep = parsedInfo.ep
+//             var toAppend = getListingHTML(getAnimes().length, title, ep, false)
+//             $(toAppend).insertBefore("#addWrapper")
+//         })
+//     });
+//     load_anime();
+//     $("#animeList").on('click', '.delete', function() {
+//         var id = $(this).attr('data-divider')
+//         var title = $('#' + id).text()
+//         title = title === "false" ? false : title
+//         deleteAnime(title)
+//         var parent = $(this).parent("div");
+//         parent.remove();
+//     });
+//     $("#animeList").on('click', '.go', function() {
+//         var id = $(this).attr('data-divider');
+//         var title = $('#' + id).text();
+//         var anime = getAnime(title)
+//         chrome.tabs.create({url: anime.url});
+//     });
+// })
+
+// function load_anime() {
+//     var animes = getAnimes()
+//     var html = ""
+//     animes.forEach(function(elem) {
+//         var toAdd = getListingHTML(elem.title, elem.ep)
+//         html += toAdd
+//     });
+//     html += "<div id='addWrapper'><button id='add'><p id='addText'>Add</p></button></div>";
+//     $("#animeList").append(html);
+// }
 
