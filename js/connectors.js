@@ -25,14 +25,39 @@ const loginConnector = async() => {
 
 const getAnimesConnector = async(token) => {
     const animes = await getAnimes(token)
-    console.log(animes)
+    let html = ""
+    animes.forEach((anime) => {
+        const toAdd = anime.ep < anime.maxEp
+        html += getListingHTML(anime.title, anime.ep, anime.url, toAdd)
+    })
+    $(html).insertBefore("#addWrapper")
 }
 
-const addAnimeConnector = async(token, title, ep, url) => {
-    const anime = await addAnime(token, title, ep, url)
-    if (anime) {
-        console.log("sup")
-    } else {
-        alert("Something went wrong. Could not add anime :(")
+const addAnimeConnector = async(token) => {
+    chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, async (tabs) => {
+        const url = tabs[0].url
+        const urlData = parse(url)
+        if (urlData) {
+            const { title, ep, url } = urlData
+            const addResult = await addAnime(token, title, ep, url)
+            if (addResult) {
+                const toAdd = addResult.ep < addResult.maxEp
+                const html = getListingHTML(title, ep, url, toAdd)
+                $(html).insertBefore("#addWrapper")
+            } else {
+                alert("Sorry something went wrong! Was unable to add this anime")
+            }
+        } else {
+            alert("This site might not be supported try kissanime, crunchyroll, gogoanime, or 4anime and make sure to click an episode!")
+        }
+    })
+}
+
+const deleteAnimeConnector = async(token, title) => {
+    const deleteResult = await deleteAnime(token, title)
+    if (!deleteResult) {
+        alert("Sorry, could not delete anime")
+        return false
     }
+    return true
 }

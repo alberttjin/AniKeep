@@ -41,6 +41,18 @@ const login = async(email, password) => {
     }
 }
 
+const signout = async(token) => {
+    const response = await fetch('http://localhost:3000/users/me/logout', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token,
+        },
+    })
+    return response.ok;
+}
+
 const getAnimes = async(token) => {
     const response = await fetch('http://localhost:3000/animes', {
         method: 'GET',

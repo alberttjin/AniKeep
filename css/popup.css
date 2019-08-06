@@ -12,11 +12,10 @@ html {
 #header {
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: space-around;
     margin: 0px;
     padding: 10px;
-    border-bottom: 2px solid #f2f2f2;
-    background-color: #0e6384;
+    border-bottom: 2px solid #3DB77B;
 }
 
 #title {
@@ -24,8 +23,7 @@ html {
     padding: 0;
     font-size: 22px;
     font-family: 'Raleway', sans-serif;
-    background-color: #0e6384;
-    color: white;
+    color: #3DB77B;
 }
 
 #add {
@@ -33,10 +31,10 @@ html {
     outline: none;
     width: 30%;
     height: 100%;
-    background-color: #0e6384;
+    border-top: 2px solid #3DB77B;
+    border-bottom: 2px solid #3DB77B;
     margin: 0;
     padding: 0;
-    border-radius: 25px;
 }
 
 #addText {
@@ -44,13 +42,12 @@ html {
     font-family: 'PT Sans', sans-serif;
     margin: 0;
     padding: 0;
-    color: white;
+    color: #3DB77B;
 }
 
 #add:hover {
-    opacity: 0.5;
     cursor: pointer;
-    border-radius: 25px;
+    background-color: #ecf8f2;
 }
 
 #addWrapper {
@@ -59,9 +56,9 @@ html {
     justify-content: center;
     margin: 0;
     padding: 0;
-    margin-top: 5px;
+    margin-top: 10px;
+    margin-bottom: 5px;
     height: 40px;
-    border-radius: 25px;
 }
 
 .anime {
@@ -71,7 +68,8 @@ html {
     align-items: center;
     margin: 0;
     padding: 0;
-    height: 40px;
+    padding-top: 8px;
+    padding-bottom: 8px;
 }
 
 .anime:hover .delete {
@@ -110,7 +108,7 @@ html {
     margin: 0;
     padding: 0;
     font-size: 14px;
-    font-family: 'PT Sans', sans-serif;   
+    font-family: 'PT Sans', sans-serif;
 }
 
 .ep {
@@ -137,9 +135,28 @@ html {
     outline: none;
     padding: 0;
     margin-right: 10px;
+    width: 70%;
 }
 
 .go:hover {
     opacity: 0.5;
     cursor: pointer;
+}
+
+.signout {
+    border: none;
+    outline: none;
+    padding: none;
+    margin: none;
+    width: 25px;
+    color: #b6e3fc;
+}
+
+.signout:hover {
+    cursor: pointer;
+    opacity: 0.5;
+}
+
+.dummy {
+    width: 18px;
 }

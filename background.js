@@ -2,9 +2,14 @@ chrome.runtime.onInstalled.addListener(function() {
     //chrome.storage.sync.set({anime: []});
 });
 
-chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-    var url = changeInfo.url
-    if (url) {
-        parseAndUpdate(url)
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+    var newUrl = changeInfo.url
+    if (newUrl) {
+        const token = getCookie("token")
+        const urlData = parse(newUrl)
+        if (urlData) {
+            const { title, ep } = urlData
+            await updateAnime(token, title, ep)
+        }
     }
 });

@@ -1,6 +1,6 @@
 $(document).ready(async() => {
     const token = getCookie("token")
-    if (token) {
+    if (!token) {
         loadLoginSignUp()
     } else {
         await loadAnime()
@@ -8,27 +8,8 @@ $(document).ready(async() => {
 });
 
 const loadLoginSignUp = () => {
-    const html = `
-        <div class="tab">
-            <button class="tablinks active" id="signuptab">Signup</button>
-            <button class="tablinks" id="logintab">Login</button>
-        </div>
-
-        <div id="signup" class="tabcontent">
-            <h3>Signup</h3>
-                <input type="text" placeholder="Email" name="email" id="email" required>
-                <input type="text" placeholder="Username" name="username" id="username" required>
-                <input type="password" placeholder="Password" name="password" id="password" required>
-                <button id="signupbutton">SignUp!</button>
-        </div>
-
-        <div id="login" class="tabcontent">
-            <h3>Login</h3>
-                <input type="text" placeholder="Email" name="email" id="lemail" required>
-                <input type="password" placeholder="Password" name="password" id="lpassword" required>
-                <button id="loginbutton">Login!</button>
-        </div>
-    `
+    document.body.innerHTML = '';
+    const html = getLoginSignUpHtml()
     $("body").append(html)
     $("body").keyup((event) => {
         if (event.keyCode === 13) {
@@ -61,44 +42,28 @@ const loadAnime = async() => {
     addHeader()
     addAddButton()
     await getAnimesConnector(token)
-    $("#add").click(addAnimeConnector)
+    $("#add").click(async() => {
+        await addAnimeConnector(token)
+    })
+    $(".go").click((event) => {
+        chrome.tabs.create({url: $(event.target).parent().attr("url")})
+    })
+    $(".delete").click(async(event) => {
+        const elem = $(event.target).parent()
+        const titleCombined= elem.attr("title")
+        const title = titleCombined.split('_').join(' ')
+        const deleteConnectorResult = await deleteAnimeConnector(token, title)
+        if (deleteConnectorResult) {
+            elem.parent().remove()
+        }
+    })
+    $(".signout").click(async() => {
+        const signOutResult = await signout(token)
+        if (signOutResult) {
+            deleteCookie("token")
+            loadLoginSignUp()
+        } else {
+            alert("Sorry, could not log you out!")
+        }
+    })
 }
-// $(function() {
-//     $("#animeList").on('click', '#add', function() {
-//         chrome.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
-//             var url = tabs[0].url
-//             var parsedInfo = parseAndAdd(url)
-//             var title = parsedInfo.title
-//             var ep = parsedInfo.ep
-//             var toAppend = getListingHTML(getAnimes().length, title, ep, false)
-//             $(toAppend).insertBefore("#addWrapper")
-//         })
-//     });
-//     load_anime();
-//     $("#animeList").on('click', '.delete', function() {
-//         var id = $(this).attr('data-divider')
-//         var title = $('#' + id).text()
-//         title = title === "false" ? false : title
-//         deleteAnime(title)
-//         var parent = $(this).parent("div");
-//         parent.remove();
-//     });
-//     $("#animeList").on('click', '.go', function() {
-//         var id = $(this).attr('data-divider');
-//         var title = $('#' + id).text();
-//         var anime = getAnime(title)
-//         chrome.tabs.create({url: anime.url});
-//     });
-// })
-
-// function load_anime() {
-//     var animes = getAnimes()
-//     var html = ""
-//     animes.forEach(function(elem) {
-//         var toAdd = getListingHTML(elem.title, elem.ep)
-//         html += toAdd
-//     });
-//     html += "<div id='addWrapper'><button id='add'><p id='addText'>Add</p></button></div>";
-//     $("#animeList").append(html);
-// }
-
