@@ -42,7 +42,7 @@ const addAddButton = () => {
 
 const getListingHTML = (title, ep, url, toAdd) => {
     const titleCombined = title.split(' ').join('_')
-    const add = toAdd ? "<p class='new'>New!</p>" : ""
+    const add = toAdd ? `<div class='new'><i class="fa fa-circle"></i></div>` : ""
     const toAppend = `
     <div class='anime'>
         <button class='delete' title=${titleCombined}>

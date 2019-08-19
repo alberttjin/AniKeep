@@ -23,14 +23,22 @@ const loginConnector = async() => {
     }
 }
 
-const getAnimesConnector = async(token) => {
-    const animes = await getAnimes(token)
-    let html = ""
-    animes.forEach((anime) => {
-        const toAdd = anime.ep < anime.maxEp
-        html += getListingHTML(anime.title, anime.ep, anime.url, toAdd)
-    })
-    $(html).insertBefore("#addWrapper")
+const getAnimesConnector = (token) => {
+    chrome.storage.local.get({'anime': []}, async(data) => {
+        let animes
+        if (!data.anime.length) {
+            animes = await getAnimes(token)
+            chrome.storage.local.set({anime: animes})
+        } else {
+            animes = data.anime
+        }
+        let html = ""
+        animes.forEach((anime) => {
+            const toAdd = anime.ep < anime.maxEp
+            html += getListingHTML(anime.title, anime.ep, anime.url, toAdd)
+        })
+        $(html).insertBefore("#addWrapper")
+    });
 }
 
 const addAnimeConnector = async(token) => {
@@ -48,7 +56,13 @@ const addAnimeConnector = async(token) => {
                 alert("Sorry something went wrong! Was unable to add this anime")
             }
         } else {
-            alert("This site might not be supported try kissanime, crunchyroll, gogoanime, or 4anime and make sure to click an episode!")
+            chrome.tabs.executeScript({
+                code: swal({
+                    title: "Oops!",
+                    text: "This site might not be supported try kissanime, crunchyroll, gogoanime, or 4anime and make sure to click an episode!",
+                    icon: "error",
+                })
+            })
         }
     })
 }

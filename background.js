@@ -1,5 +1,5 @@
 chrome.runtime.onInstalled.addListener(function() {
-    //chrome.storage.sync.set({anime: []});
+    chrome.storage.local.set({anime: []});
 });
 
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {

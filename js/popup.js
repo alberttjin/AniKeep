@@ -41,7 +41,7 @@ const loadAnime = async() => {
     const token = getCookie("token")
     addHeader()
     addAddButton()
-    await getAnimesConnector(token)
+    getAnimesConnector(token)
     $("#add").click(async() => {
         await addAnimeConnector(token)
     })
@@ -61,6 +61,7 @@ const loadAnime = async() => {
         const signOutResult = await signout(token)
         if (signOutResult) {
             deleteCookie("token")
+            clearCache()
             loadLoginSignUp()
         } else {
             alert("Sorry, could not log you out!")
